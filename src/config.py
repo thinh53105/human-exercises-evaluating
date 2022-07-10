@@ -3,7 +3,7 @@ from cv2 import FONT_HERSHEY_SIMPLEX
 class UIUtilsConfig:
 
     MOUSE_STATE_DICT = {
-        'normal' : {'color': (195, 195, 75), 'foreground': (255, 255, 255)},
+        # 'normal' : {'color': (195, 195, 75), 'foreground': (255, 255, 255)},
         'hover' : {'color': (22, 210, 64), 'foreground': (255, 255, 255)},
         'clicked' : {'color': (48, 153, 70), 'foreground': (255, 255, 255)}
     }

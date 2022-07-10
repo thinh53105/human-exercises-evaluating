@@ -10,6 +10,7 @@ class Utils:
 
     def __init__(self, start_pos, w_h, color):
         self.x, self.y = start_pos
+        self.abs_x, self.abs_y = start_pos
         self.w, self.h = w_h
         self.color = color
     
@@ -36,6 +37,8 @@ class Container(Utils):
     
     def add_util(self, util):
         self.util_list.append(util)
+        util.abs_x = self.abs_x + util.x
+        util.abs_y = self.abs_y + util.y
     
     def update(self):
         for util in self.util_list:
@@ -46,13 +49,13 @@ class Container(Utils):
 
 class Window(Container):
 
-    def __init__(self, w_h, color, util_list=[]):
-        super().__init__(start_pos=(None, None), w_h=w_h, color=color, util_list=util_list)
+    def __init__(self, w_h, color, util_list):
+        super().__init__(start_pos=(0, 0), w_h=w_h, color=color, util_list=util_list)
 
 
 class Div(Container):
 
-    def __init__(self, start_pos, w_h, color, util_list=[]):
+    def __init__(self, start_pos, w_h, color, util_list):
         super().__init__(start_pos=start_pos, w_h=w_h, color=color, util_list=util_list)
     
     def place(self, image):
@@ -63,19 +66,24 @@ class Div(Container):
 
 class Button(Utils):
 
-    def __init__(self, start_pos, w_h, text, text_width, fg_scale, fg_strong, func):
-        super().__init__(start_pos=start_pos, w_h=w_h, color=None)
+    def __init__(self, start_pos, w_h, color_normal, text, text_width, fg_color_normal, fg_scale, fg_strong, func):
+        super().__init__(start_pos=start_pos, w_h=w_h, color=color_normal)
         self.text = text
         self.text_width = text_width
-        self.fg_color = None
+        self.color_normal = color_normal
+        self.fg_color = self.fg_color_normal = fg_color_normal
         self.fg_scale = fg_scale
         self.fg_strong = fg_strong
         self.func = func
         self.state = 'normal'
 
     def place(self, image):
-        self.color = ui_utils_config.MOUSE_STATE_DICT[self.state]['color']
-        self.fg_color = ui_utils_config.MOUSE_STATE_DICT[self.state]['foreground']
+        if self.state != 'normal':
+            self.color = ui_utils_config.MOUSE_STATE_DICT[self.state]['color']
+            self.fg_color = ui_utils_config.MOUSE_STATE_DICT[self.state]['foreground']
+        else:
+            self.color = self.color_normal
+            self.fg_color = self.fg_color_normal
 
         image = cv2.rectangle(image, (self.x, self.y), (self.x + self.w, self.y + self.h), self.color, cv2.FILLED)
         image = cv2.putText(
@@ -89,7 +97,7 @@ class Button(Utils):
         return image
 
     def mouse_focus(self, x, y):
-        return self.x <= x <= self.x + self.w and self.y <= y <= self.y + self.h
+        return self.abs_x <= x <= self.abs_x + self.w and self.abs_y <= y <= self.abs_y + self.h
 
     def get_state(self):
         return self.state
