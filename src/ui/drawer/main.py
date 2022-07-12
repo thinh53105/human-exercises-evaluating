@@ -1,15 +1,14 @@
 from config import UIAppConfig
 
-import cv2
-import numpy as np
-from .utils import Window, Div, Label, Button
+from ..utils import Window, Div, Label, Button, ButtonsPool
+
 
 app_config = UIAppConfig()
 
-class UIDrawer:
 
-    def __init__(self):
-        self.btn_list = []
+class MainDrawer:
+
+    def __init__(self, btn_pushups_func, btn_squat_func):
         self.window = Window(
             (app_config.WINDOW_WIDTH, app_config.WINDOW_HEIGHT),
             app_config.BACKGROUND_COLOR,
@@ -32,32 +31,20 @@ class UIDrawer:
             (50, 50), (300, 100), (195, 195, 75),
             "Push-ups", 100, 
             (255, 255, 255), 1, 4,
-            None
+            btn_pushups_func
         )
         self.btn_squats = Button(
             (450, 50), (300, 100), (195, 195, 75),
             "Squats", 100, 
             (255, 255, 255), 1, 4,
-            None
+            btn_squat_func
         )
+        self.btns_pool = ButtonsPool([
+            self.btn_pushups,
+            self.btn_squats
+        ])
 
         self.div_title.add_util(self.lbl_title)
-        self.div_navigator.add_util(self.btn_pushups)
-        self.div_navigator.add_util(self.btn_squats)
+        self.div_navigator.add_utils(self.btns_pool)
         self.window.add_util(self.div_title)
         self.window.add_util(self.div_navigator)
-        self.btn_list.append(self.btn_pushups)
-        self.btn_list.append(self.btn_squats)
-
-    def get_ui(self):
-        return self.window.get_cur_frame()
-    
-    def update_ui(self):
-        self.window.update()
-    
-    def get_btn_list(self):
-        return self.btn_list
-    
-    def reset_btn(self):
-        for btn in self.btn_list:
-            btn.set_state('normal')

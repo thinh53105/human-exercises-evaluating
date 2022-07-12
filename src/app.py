@@ -1,30 +1,20 @@
 import cv2
-import numpy as np
 
-from ui.ui_drawer import UIDrawer
+from ui.drawer.ui_drawer import UIDrawer
 
 ui = UIDrawer()
 
 
 def mouse_click(event, x, y, flags, param):
     global ui
-    btn_list = ui.get_btn_list()
+    btns_pool = ui.get_btns_pool()
 
     # mouse hover
-    for btn in btn_list:
-        if btn.mouse_focus(x, y) and btn.get_state() != 'clicked':
-            btn.set_state('hover')
-        elif btn.get_state() == 'hover':
-            btn.set_state('normal')
+    btns_pool.hanle_mouse_hover(x, y)
 
     # mouse clicked
     if event == cv2.EVENT_LBUTTONDBLCLK:
-        for btn in btn_list:
-            if btn.mouse_focus(x, y):
-                ui.reset_btn()
-                btn.set_state('clicked')
-                btn.call_func()
-                ui.reset_btn()
+        btns_pool.handle_mouse_clicked(x, y)
 
 
 cv2.namedWindow("Push-up Recognition")

@@ -40,6 +40,10 @@ class Container(Utils):
         util.abs_x = self.abs_x + util.x
         util.abs_y = self.abs_y + util.y
     
+    def add_utils(self, util_list):
+        for util in util_list:
+            self.add_util(util)
+    
     def update(self):
         for util in self.util_list:
             if isinstance(util, Container):
@@ -134,3 +138,28 @@ class Label(Utils):
 
     def set_text(self, new_text):
         self.text = new_text
+
+
+class ButtonsPool(list):
+
+    def __init__(self, btn_list):
+        self.extend(btn_list)
+    
+    def hanle_mouse_hover(self, x, y):
+        for btn in self:
+            if btn.mouse_focus(x, y) and btn.get_state() != 'clicked':
+                btn.set_state('hover')
+            elif btn.get_state() == 'hover':
+                btn.set_state('normal')
+
+    def handle_mouse_clicked(self, x, y):
+        for btn in self:
+            if btn.mouse_focus(x, y):
+                self.reset_btn()
+                btn.set_state('clicked')
+                btn.call_func()
+                btn.set_state('normal')
+    
+    def reset_btn(self):
+        for btn in self:
+            btn.set_state('normal')
