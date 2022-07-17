@@ -35,10 +35,18 @@ class Container(Utils):
     def get_cur_frame(self):
         return self.cur_frame
     
+    def update_abs_pos_for_sub_util(self, util):
+        if isinstance(util, Container):
+            for sub_util in util.util_list:
+                sub_util.abs_x += self.abs_x
+                sub_util.abs_y += self.abs_y
+                self.update_abs_pos_for_sub_util(sub_util)
+    
     def add_util(self, util):
         self.util_list.append(util)
         util.abs_x = self.abs_x + util.x
         util.abs_y = self.abs_y + util.y
+        self.update_abs_pos_for_sub_util(util)
     
     def add_utils(self, util_list):
         for util in util_list:
