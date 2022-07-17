@@ -12,9 +12,9 @@ class PushupsKeypointsDetector(PoseDetector):
             return image, None
         
         if self.left(landmarks):
-            p_indexes = (12, 14, 16)
-        else:
             p_indexes = (11, 13, 15)
+        else:
+            p_indexes = (12, 14, 16)
         
         cur_angle = self.find_angle(landmarks, *p_indexes)
 

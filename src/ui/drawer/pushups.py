@@ -1,6 +1,6 @@
 from config import UIAppConfig
 
-from ..utils import Window, Div, Label, Button, ButtonsPool
+from ..utils import Window, Div, Label, Button, ButtonsPool, ImageFrame
 
 
 app_config = UIAppConfig()
@@ -19,12 +19,41 @@ class PushupsDrawer:
             []
         )
         self.div_navigator = Div(
-            (0, 200), (1600, 200), (55, 55, 55),
+            (1200, 50), (400, 800), (55, 55, 55),
+            []
+        )
+        self.div_exercise = Div(
+            (100, 100), (1000, 600), (155, 155, 155),
+            []
+        )
+        self.div_analysis = Div(
+            (150, 700), (900, 200), app_config.BACKGROUND_COLOR,
             []
         )
         self.lbl_title = Label(
             (45, 0), (700, 60), None,
             'PUSH-UPS EVALUATING', 700, 
+            (255, 255, 255), 1, 5
+        )
+        self.frame_pushups = ImageFrame(
+            (0, 0), (1000, 600),
+            color=None,
+            image=None,
+            image_path='src/sample_images/img001.png'
+        )
+        self.lbl_total = Label(
+            (0, 75), (300, 60), None,
+            'Total: 0', 200, 
+            (255, 255, 255), 1, 5
+        )
+        self.lbl_right = Label(
+            (300, 75), (300, 60), None,
+            'Right: 0', 200, 
+            (255, 255, 255), 1, 5
+        )
+        self.lbl_wrong = Label(
+            (600, 75), (300, 60), None,
+            'Wrong: 0', 200, 
             (255, 255, 255), 1, 5
         )
         self.btn_file = Button(
@@ -34,19 +63,19 @@ class PushupsDrawer:
             btn_file_func
         )
         self.btn_camera = Button(
-            (450, 50), (300, 100), (195, 195, 75),
+            (50, 250), (300, 100), (195, 195, 75),
             "Open Camera", 200, 
             (255, 255, 255), 1, 4,
             btn_camera_func
         )
         self.btn_stop = Button(
-            (850, 50), (300, 100), (195, 195, 75),
+            (50, 450), (300, 100), (195, 195, 75),
             "Stop", 100, 
             (255, 255, 255), 1, 4,
             btn_stop_func
         )
         self.btn_back = Button(
-            (1250, 50), (300, 100), (195, 195, 75),
+            (50, 650), (300, 100), (195, 195, 75),
             "Back", 100, 
             (255, 255, 255), 1, 4,
             btn_back_func
@@ -59,6 +88,18 @@ class PushupsDrawer:
         ])
 
         self.div_title.add_util(self.lbl_title)
+        self.div_exercise.add_util(self.frame_pushups)
+        self.div_analysis.add_utils([
+            self.lbl_total,
+            self.lbl_right,
+            self.lbl_wrong
+        ])
         self.div_navigator.add_utils(self.btns_pool)
-        self.window.add_util(self.div_title)
-        self.window.add_util(self.div_navigator)
+        self.window.add_utils([
+            self.div_title,
+            self.div_exercise,
+            self.div_analysis,
+            self.div_navigator
+        ])
+    def get_stream_frame(self):
+        return self.frame_pushups

@@ -76,6 +76,37 @@ class Div(Container):
         return image
 
 
+class ImageFrame(Utils):
+
+    def __init__(self, start_pos, w_h, color=None, image=None, image_path=''):
+        super().__init__(start_pos, w_h, color)
+        self.update_frame(color=color, image=image, image_path=image_path)
+        
+            
+    def get_default_frame(self, color):
+        ones_array = np.ones((self.h, self.w, 3), dtype="uint8")
+        bg_color_array = np.array(color).reshape(1, 1, 3)
+        default_frame = ones_array * bg_color_array
+        return default_frame.astype('uint8')
+    
+    def update_frame(self, color=None, image=None, image_path=''):
+        if color is not None:
+            self.frame = self.get_default_frame(color)
+            return
+        if image is not None:
+            tmp_frame = image
+        elif image_path:
+            tmp_frame = cv2.imread(image_path)
+        else:
+            raise Exception("attributes 'color', 'image' and 'image_path' can not be all NULL")
+        self.frame = cv2.resize(tmp_frame, dsize=(self.w, self.h))
+    
+    def place(self, image):
+        x, y, w, h = self.x, self.y, self.w, self.h
+        image[y:y+h, x:x+w] = self.frame
+        return image
+
+
 class Button(Utils):
 
     def __init__(self, start_pos, w_h, color_normal, text, text_width, fg_color_normal, fg_scale, fg_strong, func):
@@ -153,7 +184,7 @@ class ButtonsPool(list):
     def __init__(self, btn_list):
         self.extend(btn_list)
     
-    def hanle_mouse_hover(self, x, y):
+    def handle_mouse_hover(self, x, y):
         for btn in self:
             if btn.mouse_focus(x, y) and btn.get_state() != 'clicked':
                 btn.set_state('hover')
