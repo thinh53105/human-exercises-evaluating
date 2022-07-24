@@ -42,18 +42,23 @@ class PushupsDrawer:
             image_path='src/sample_images/img001.png'
         )
         self.lbl_total = Label(
-            (0, 75), (300, 60), None,
+            (0, 75), (200, 60), None,
             'Total: 0', 200, 
             (255, 255, 255), 1, 5
         )
         self.lbl_right = Label(
-            (300, 75), (300, 60), None,
+            (200, 75), (200, 60), None,
             'Right: 0', 200, 
             (255, 255, 255), 1, 5
         )
         self.lbl_wrong = Label(
-            (600, 75), (300, 60), None,
+            (400, 75), (200, 60), None,
             'Wrong: 0', 200, 
+            (255, 255, 255), 1, 5
+        )
+        self.lbl_fps = Label(
+            (600, 75), (200, 60), None,
+            'FPS: 0', 200, 
             (255, 255, 255), 1, 5
         )
         self.btn_file = Button(
@@ -92,7 +97,8 @@ class PushupsDrawer:
         self.div_analysis.add_utils([
             self.lbl_total,
             self.lbl_right,
-            self.lbl_wrong
+            self.lbl_wrong,
+            self.lbl_fps
         ])
         self.div_navigator.add_utils(self.btns_pool)
         self.window.add_utils([
