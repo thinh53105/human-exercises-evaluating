@@ -4,7 +4,7 @@ Tracking, analyzing and evaluating performance of many human exercises like push
 ## Create and activate virtual enviroment
 ```
 virtualenv venv
-. ven/bin/activate
+. venv/bin/activate
 ```
 
 ## Install requirements

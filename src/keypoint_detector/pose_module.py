@@ -3,6 +3,8 @@ import math
 import cv2
 import mediapipe as mp
 
+import time
+
 
 class PoseDetector:
 
@@ -13,9 +15,14 @@ class PoseDetector:
             min_tracking_confidence=tracking_conf
         )
     
+    
     def find_position(self, image):
         landmarks = []
-        results = self.pose.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        preprocess_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        # preprocess_image = cv2.resize(image, dsize=(400, 200))
+        t1 = time.time()
+        results = self.pose.process(preprocess_image)
+        print(time.time()-t1)
         if results.pose_landmarks:
             for idx, lm in enumerate(results.pose_landmarks.landmark):
                 h, w, _ = image.shape
