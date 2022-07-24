@@ -1,6 +1,8 @@
 from .main import MainDrawer
 from .pushups import PushupsDrawer
 
+import matplotlib.pyplot as plt
+
 
 class UIDrawer:
 
@@ -24,10 +26,21 @@ class UIDrawer:
     
     def update_ui(self):
         if self.type:
-            frame = self.video_streamer.get_frame()
+            if self.video_streamer.evaluator.is_eval():
+                self.video_streamer.evaluator.evaluate()
+
+            frame, analysis_count = self.video_streamer.get_frame()
             stream_frame = self.current_ui.get_stream_frame()
             stream_frame.update_frame(image=frame)
+            self.update_analysis_label(*analysis_count)
+            
         self.current_ui.window.update()
+    
+    def update_analysis_label(self, total, no_right, no_wrong):
+        self.current_ui.lbl_total.set_text(f"Total : {int(total)}")
+        self.current_ui.lbl_right.set_text(f"Right : {no_right}")
+        self.current_ui.lbl_wrong.set_text(f"Wrong : {no_wrong}")
+        self.current_ui.div_analysis.update(reset=True)
     
     def get_btns_pool(self):
         return self.current_ui.btns_pool
