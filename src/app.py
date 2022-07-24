@@ -29,6 +29,7 @@ while True:
     cv2.imshow("Human Exercises Evaluating", bg)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        ui.btn_stop_action()
         break
 
 cv2.destroyAllWindows()

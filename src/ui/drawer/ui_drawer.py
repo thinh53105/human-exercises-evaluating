@@ -5,7 +5,7 @@ from .pushups import PushupsDrawer
 class UIDrawer:
 
     def __init__(self, video_streamer):
-        self.video_streamer = video_streamer.start()
+        self.video_streamer = video_streamer
         self.type = 'pushups'
         self.ui_drawer = MainDrawer(
             self.btn_pushups_action,
