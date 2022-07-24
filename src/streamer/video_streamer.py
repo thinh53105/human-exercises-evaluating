@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import config
 
 from threading import Thread, Lock
+import time
 
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
@@ -33,6 +34,7 @@ class VideoStreamer:
             'src/predictor/pushups/models/mobinet-20220724_down.tflite'],
             )
         self.total, self.no_right, self.no_wrong = 0, 0, 0
+        self.fps = 0
     
     def open_stream(self, video_path):
         self.start()
@@ -60,6 +62,7 @@ class VideoStreamer:
     def loop(self):
         frame_count = 0
         target_frame, target_angle = None, 0
+        p_time = time.time()
         while not self.is_stopped:
             if not self.stream:
                 continue
@@ -101,13 +104,17 @@ class VideoStreamer:
 
             self.frame = frame
             frame_count += 1
+            c_time = time.time()
+            self.fps = 1 / (c_time - p_time + 1e-9)
+            self.evaluator.fps_list.append(self.fps)
+            p_time = c_time
 
     def get_frame(self):
         self.total = int(self.lpf.count)
-        return self.frame, (self.total, self.no_right, self.no_wrong)
+        return self.frame, (self.total, self.no_right, self.no_wrong, self.fps)
     
     def reset_analysis_value(self):
-        self.total, self.no_right, self.no_wrong = 0, 0, 0
+        self.total, self.no_right, self.no_wrong, self.fps = 0, 0, 0, 0
     
     def stop(self):
         if self.is_stopped:

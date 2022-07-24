@@ -36,10 +36,11 @@ class UIDrawer:
             
         self.current_ui.window.update()
     
-    def update_analysis_label(self, total, no_right, no_wrong):
-        self.current_ui.lbl_total.set_text(f"Total : {int(total)}")
+    def update_analysis_label(self, total, no_right, no_wrong, fps):
+        self.current_ui.lbl_total.set_text(f"Total : {total}")
         self.current_ui.lbl_right.set_text(f"Right : {no_right}")
         self.current_ui.lbl_wrong.set_text(f"Wrong : {no_wrong}")
+        self.current_ui.lbl_fps.set_text(f"FPS : {int(fps)}")
         self.current_ui.div_analysis.update(reset=True)
     
     def get_btns_pool(self):

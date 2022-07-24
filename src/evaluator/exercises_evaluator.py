@@ -10,6 +10,7 @@ class PushupsEvaluator:
         self.signal_filter = signal_filter
         self.up_list, self.down_list = [], []
         self.color = {"RIGHT": (0, 255, 0), "WRONG": (0, 0, 255)}
+        self.fps_list = []
     
     def evaluate(self):
         self.evaluate_counting()
@@ -19,6 +20,9 @@ class PushupsEvaluator:
         if self.down_list and self.up_list:
             self.evaluate_right_wrong((525, 350))
             self.up_list, self.down_list = [], []
+        
+        self.evaluate_fps()
+        self.fps_list = []
     
     def evaluate_counting(self):
         plt.figure(figsize=(10, 10))
@@ -58,6 +62,15 @@ class PushupsEvaluator:
             cv2.waitKey(0)
         if l != 0:
             cv2.destroyWindow(f'{l}/{l}')
+    
+    def evaluate_fps(self):
+        plt.figure(figsize=(10, 10))
+        plt.plot(self.fps_list)
+        plt.axhline(y=np.average(self.fps_list), color='r', linestyle='-')
+        plt.legend(['raw fps', 'average'])
+        plt.xlabel('frame count')
+        plt.ylabel('fps')
+        plt.show()
     
     def evaluate_next(self):
         self.eval = True
