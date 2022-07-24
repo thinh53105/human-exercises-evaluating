@@ -1,5 +1,6 @@
-# h5 file
+# tf model file (.h5 or .tflite)
 *.h5
+*.tflite
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

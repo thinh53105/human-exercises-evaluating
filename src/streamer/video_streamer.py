@@ -29,8 +29,8 @@ class VideoStreamer:
         self.lpf = LowPassFilter(self.lpf_config.BETA)
         self.evaluator = PushupsEvaluator(signal_filter=self.lpf)
         self.predictor = PushupsPredictor([
-            'src/predictor/pushups/models/eff_up.h5',
-            'src/predictor/pushups/models/eff_down.h5'],
+            'src/predictor/pushups/models/mobinet-20220724_up.tflite',
+            'src/predictor/pushups/models/mobinet-20220724_down.tflite'],
             )
         self.total, self.no_right, self.no_wrong = 0, 0, 0
     
@@ -83,15 +83,13 @@ class VideoStreamer:
                     target_frame, target_angle = frame, cur_angle
                 
                 if state == 1:
-                    conf = self.predictor.predict(target_frame, 1)
-                    up_right = conf < 0.5
+                    up_right, conf = self.predictor.predict(target_frame, 1)
                     self.evaluator.up_list.append((target_frame, up_right, conf))
 
                     target_angle = 200
                 
                 if state == 0:
-                    conf = self.predictor.predict(target_frame, 0)
-                    down_right = conf < 0.5
+                    down_right, conf = self.predictor.predict(target_frame, 0)
                     self.evaluator.down_list.append((target_frame, down_right, conf))
 
                     if up_right and down_right:
