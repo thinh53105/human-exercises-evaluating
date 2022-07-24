@@ -16,3 +16,8 @@ class UIAppConfig:
     WINDOW_WIDTH, WINDOW_HEIGHT = 1600, 900
     BACKGROUND_COLOR = (200, 111, 111)
     
+
+class LPFConfig:
+    FRAME_SKIP_RATE = 1
+    T = 50
+    BETA = 1 - FRAME_SKIP_RATE / T

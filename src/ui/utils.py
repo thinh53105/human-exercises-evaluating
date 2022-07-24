@@ -52,7 +52,9 @@ class Container(Utils):
         for util in util_list:
             self.add_util(util)
     
-    def update(self):
+    def update(self, reset=False):
+        if reset:
+            self.cur_frame = self.get_default_frame()
         for util in self.util_list:
             if isinstance(util, Container):
                 util.update()
