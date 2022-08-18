@@ -34,3 +34,4 @@ cap.release()
 cv2.destroyAllWindows()
 
 print(np.average(pred_times))
+print('Test')
