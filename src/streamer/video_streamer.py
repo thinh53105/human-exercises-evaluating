@@ -9,30 +9,51 @@ import time
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
 
-from keypoint_detector.exercises_module import PushupsKeypointsDetector
-from counter.lpf import LowPassFilter
-from evaluator.exercises_evaluator import PushupsEvaluator
-from predictor.pushups.predictor import PushupsPredictor
+from keypoint_detector.exercises_module import PushupsKeypointsDetector, SquatsKeypointsDetector
+from counter.lpf import PushupsLowPassFilter, SquatsLowPassFilter
+from evaluator.exercises_evaluator import PushupsEvaluator, SquatsEvaluator
+from predictor.pushups.predictor import PushupsPredictor, SquatsPredictor
+
 
 root = tk.Tk()
 root.withdraw()
 
 class VideoStreamer:
     
-    def __init__(self) -> None:
+    def __init__(self, type) -> None:
         self.stream = None
-        self.default_frame = cv2.imread('src/sample_images/img001.png')
+        self.type = type
+        self.default_frame = cv2.imread(f'src/sample_images/{type}.png')
         self.frame = self.default_frame.copy()
-        self.keypoint_detector = PushupsKeypointsDetector()
         self.is_stopped = False
         self.thread = None
         self.lpf_config = config.LPFConfig
-        self.lpf = LowPassFilter(self.lpf_config.BETA)
-        self.evaluator = PushupsEvaluator(signal_filter=self.lpf)
-        self.predictor = PushupsPredictor([
-            'src/predictor/pushups/models/mobinet-20220724_up.tflite',
-            'src/predictor/pushups/models/mobinet-20220724_down.tflite'],
-            )
+        if self.type == 'pushups':
+            print('\n')
+            print('='*100)
+            print('LOADING PUSH-UPS MODEL')
+            print('='*100)
+            self.lpf = PushupsLowPassFilter(self.lpf_config.BETA)
+            self.keypoint_detector = PushupsKeypointsDetector()
+            self.evaluator = PushupsEvaluator(signal_filter=self.lpf)
+            self.predictor = PushupsPredictor([
+                'src/predictor/pushups/models/mobinet-20220724_up.tflite',
+                'src/predictor/pushups/models/mobinet-20220724_down.tflite'],
+                )
+            
+        elif self.type == 'squats':
+            print('\n')
+            print('='*100)
+            print('LOADING SQUATS MODEL')
+            print('='*100)
+            self.lpf = SquatsLowPassFilter(self.lpf_config.BETA)
+            self.keypoint_detector = SquatsKeypointsDetector()
+            self.evaluator = SquatsEvaluator(signal_filter=self.lpf)
+            self.predictor = SquatsPredictor([
+                'src/predictor/pushups/models/mobinet-20220724_up.tflite',
+                'src/predictor/pushups/models/mobinet-20220724_down.tflite'],
+                )
+            
         self.total, self.no_right, self.no_wrong = 0, 0, 0
         self.fps = 0
     
@@ -73,8 +94,8 @@ class VideoStreamer:
                 continue
             frame, cur_angle = self.keypoint_detector.process(frame)
             if not cur_angle:
-                self.frame = self.default_frame
-                self.stop()
+                # self.frame = self.default_frame
+                # self.stop()
                 continue
             if (frame_count + 1) % self.lpf_config.FRAME_SKIP_RATE == 0:
                 cur_angle = max(60, cur_angle)

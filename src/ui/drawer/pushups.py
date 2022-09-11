@@ -39,7 +39,7 @@ class PushupsDrawer:
             (0, 0), (1000, 600),
             color=None,
             image=None,
-            image_path='src/sample_images/img001.png'
+            image_path='src/sample_images/pushups.png'
         )
         self.lbl_total = Label(
             (0, 75), (200, 60), None,
