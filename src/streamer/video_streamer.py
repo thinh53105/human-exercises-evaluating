@@ -12,7 +12,8 @@ from tkinter.filedialog import askopenfilename
 from keypoint_detector.exercises_module import PushupsKeypointsDetector, SquatsKeypointsDetector
 from counter.lpf import PushupsLowPassFilter, SquatsLowPassFilter
 from evaluator.exercises_evaluator import PushupsEvaluator, SquatsEvaluator
-from predictor.pushups.predictor import PushupsPredictor, SquatsPredictor
+from predictor.pushups.predictor import PushupsPredictor
+from predictor.squats.predictor import  SquatsPredictor
 
 
 root = tk.Tk()
@@ -28,6 +29,9 @@ class VideoStreamer:
         self.is_stopped = False
         self.thread = None
         self.lpf_config = config.LPFConfig
+        self.pushups_config = config.PushupsConfig
+        self.squats_config = config.SquatsConfig
+
         if self.type == 'pushups':
             print('\n')
             print('='*100)
@@ -37,8 +41,8 @@ class VideoStreamer:
             self.keypoint_detector = PushupsKeypointsDetector()
             self.evaluator = PushupsEvaluator(signal_filter=self.lpf)
             self.predictor = PushupsPredictor([
-                'src/predictor/pushups/models/mobinet-20220724_up.tflite',
-                'src/predictor/pushups/models/mobinet-20220724_down.tflite'],
+                self.pushups_config.PUSHUPS_UP_WEIGHT,
+                self.pushups_config.PUSHUPS_DOWN_WEIGHT],
                 )
             
         elif self.type == 'squats':
@@ -50,8 +54,8 @@ class VideoStreamer:
             self.keypoint_detector = SquatsKeypointsDetector()
             self.evaluator = SquatsEvaluator(signal_filter=self.lpf)
             self.predictor = SquatsPredictor([
-                'src/predictor/pushups/models/mobinet-20220724_up.tflite',
-                'src/predictor/pushups/models/mobinet-20220724_down.tflite'],
+                self.squats_config.SQUATS_UP_WEIGHT,
+                self.squats_config.SQUATS_DOWN_WEIGHT],
                 )
             
         self.total, self.no_right, self.no_wrong = 0, 0, 0
