@@ -9,11 +9,10 @@ import time
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
 
-from keypoint_detector.exercises_module import PushupsKeypointsDetector, SquatsKeypointsDetector
-from counter.lpf import PushupsLowPassFilter, SquatsLowPassFilter
-from evaluator.exercises_evaluator import PushupsEvaluator, SquatsEvaluator
-from predictor.pushups.predictor import PushupsPredictor
-from predictor.squats.predictor import  SquatsPredictor
+from keypoint_detector.exercises_module import KeypointsDetector
+from counter.lpf import LowPassFilter
+from evaluator.exercises_evaluator import Evaluator
+from predictor.excercise_predictor import Predictor
 
 
 root = tk.Tk()
@@ -28,36 +27,16 @@ class VideoStreamer:
         self.frame = self.default_frame.copy()
         self.is_stopped = False
         self.thread = None
-        self.lpf_config = config.LPFConfig
-        self.pushups_config = config.PushupsConfig
-        self.squats_config = config.SquatsConfig
+        self.lpf_config = config.LPFConfig(exercise_type=self.type)
+        self.lpf = LowPassFilter(self.lpf_config.BETA)
+        self.exc_config = config.ExcerciseConfig(exercise_type=self.type)
+        self.evaluator = Evaluator(signal_filter=self.lpf)
+        self.keypoint_detector = KeypointsDetector(config=self.exc_config)
+        self.predictor = Predictor([
+                self.exc_config.UP_WEIGHT,
+                self.exc_config.DOWN_WEIGHT],
+                )
 
-        if self.type == 'pushups':
-            print('\n')
-            print('='*100)
-            print('LOADING PUSH-UPS MODEL')
-            print('='*100)
-            self.lpf = PushupsLowPassFilter(self.lpf_config.BETA)
-            self.keypoint_detector = PushupsKeypointsDetector()
-            self.evaluator = PushupsEvaluator(signal_filter=self.lpf)
-            self.predictor = PushupsPredictor([
-                self.pushups_config.PUSHUPS_UP_WEIGHT,
-                self.pushups_config.PUSHUPS_DOWN_WEIGHT],
-                )
-            
-        elif self.type == 'squats':
-            print('\n')
-            print('='*100)
-            print('LOADING SQUATS MODEL')
-            print('='*100)
-            self.lpf = SquatsLowPassFilter(self.lpf_config.BETA)
-            self.keypoint_detector = SquatsKeypointsDetector()
-            self.evaluator = SquatsEvaluator(signal_filter=self.lpf)
-            self.predictor = SquatsPredictor([
-                self.squats_config.SQUATS_UP_WEIGHT,
-                self.squats_config.SQUATS_DOWN_WEIGHT],
-                )
-            
         self.total, self.no_right, self.no_wrong = 0, 0, 0
         self.fps = 0
     
