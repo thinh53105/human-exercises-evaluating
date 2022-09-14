@@ -1,14 +1,15 @@
 from .main import MainDrawer
 from .pushups import PushupsDrawer
-
+from .squats import SquatsDrawer
+from streamer.video_streamer import VideoStreamer
 import matplotlib.pyplot as plt
 
 
 class UIDrawer:
 
-    def __init__(self, video_streamer):
-        self.video_streamer = video_streamer
-        self.type = 'pushups'
+    def __init__(self):
+        self.video_streamer = None
+        self.type = None
         self.ui_drawer = MainDrawer(
             self.btn_pushups_action,
             self.btn_squats_action
@@ -19,7 +20,13 @@ class UIDrawer:
             self.btn_stop_action,
             self.btn_back_action
         )
-        self.current_ui = self.pushups_drawer
+        self.squats_drawer = SquatsDrawer(
+            self.btn_file_action,
+            self.btn_camera_action,
+            self.btn_stop_action,
+            self.btn_back_action
+        )
+        self.current_ui = self.ui_drawer
 
     def get_ui(self):
         return self.current_ui.window.get_cur_frame()
@@ -49,9 +56,12 @@ class UIDrawer:
     def btn_pushups_action(self):
         self.current_ui = self.pushups_drawer
         self.type = 'pushups'
+        self.video_streamer = VideoStreamer(self.type)
     
     def btn_squats_action(self):
-        print('BUTTON SQUATS CALLED')
+        self.current_ui = self.squats_drawer
+        self.type = 'squats'
+        self.video_streamer = VideoStreamer(self.type)
 
     def btn_file_action(self):
         self.video_streamer.open_file()

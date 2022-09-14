@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-class PushupsEvaluator:
+class Evaluator:
     
     def __init__(self, signal_filter) -> None:
         self.eval = False

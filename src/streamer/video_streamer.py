@@ -9,30 +9,34 @@ import time
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
 
-from keypoint_detector.exercises_module import PushupsKeypointsDetector
+from keypoint_detector.exercises_module import KeypointsDetector
 from counter.lpf import LowPassFilter
-from evaluator.exercises_evaluator import PushupsEvaluator
-from predictor.pushups.predictor import PushupsPredictor
+from evaluator.exercises_evaluator import Evaluator
+from predictor.excercise_predictor import Predictor
+
 
 root = tk.Tk()
 root.withdraw()
 
 class VideoStreamer:
     
-    def __init__(self) -> None:
+    def __init__(self, type) -> None:
         self.stream = None
-        self.default_frame = cv2.imread('src/sample_images/img001.png')
+        self.type = type
+        self.default_frame = cv2.imread(f'src/sample_images/{type}.png')
         self.frame = self.default_frame.copy()
-        self.keypoint_detector = PushupsKeypointsDetector()
         self.is_stopped = False
         self.thread = None
-        self.lpf_config = config.LPFConfig
+        self.lpf_config = config.LPFConfig(exercise_type=self.type)
         self.lpf = LowPassFilter(self.lpf_config.BETA)
-        self.evaluator = PushupsEvaluator(signal_filter=self.lpf)
-        self.predictor = PushupsPredictor([
-            'src/predictor/pushups/models/mobinet-20220724_up.tflite',
-            'src/predictor/pushups/models/mobinet-20220724_down.tflite'],
-            )
+        self.exc_config = config.ExcerciseConfig(exercise_type=self.type)
+        self.evaluator = Evaluator(signal_filter=self.lpf)
+        self.keypoint_detector = KeypointsDetector(config=self.exc_config)
+        self.predictor = Predictor([
+                self.exc_config.UP_WEIGHT,
+                self.exc_config.DOWN_WEIGHT],
+                )
+
         self.total, self.no_right, self.no_wrong = 0, 0, 0
         self.fps = 0
     
@@ -73,8 +77,8 @@ class VideoStreamer:
                 continue
             frame, cur_angle = self.keypoint_detector.process(frame)
             if not cur_angle:
-                self.frame = self.default_frame
-                self.stop()
+                # self.frame = self.default_frame
+                # self.stop()
                 continue
             if (frame_count + 1) % self.lpf_config.FRAME_SKIP_RATE == 0:
                 cur_angle = max(60, cur_angle)

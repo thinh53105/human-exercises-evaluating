@@ -1,10 +1,8 @@
 import cv2
 
 from ui.drawer.ui_drawer import UIDrawer
-from streamer.video_streamer import VideoStreamer
 
-video_streamer = VideoStreamer()
-ui = UIDrawer(video_streamer)
+ui = UIDrawer()
 
 
 def mouse_click(event, x, y, flags, param):

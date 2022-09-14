@@ -32,3 +32,4 @@ class LowPassFilter:
         self.high, self.count = True, 0
         self.angle_list = []
         self.filter_list = []
+
