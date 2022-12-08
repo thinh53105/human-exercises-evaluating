@@ -12,8 +12,8 @@ class LowPassFilter:
     def cal_next(self, value):
         if not self.angle_list:
             self.angle_list.append(value)
-            self.filter_list.append(value - 10)
-            return value - 10, -1
+            self.filter_list.append(value - 20)
+            return value - 20, -1
         self.angle_list.append(value)
         Fn = self.beta * self.filter_list[-1] + (1 - self.beta) * value
         self.filter_list.append(Fn)

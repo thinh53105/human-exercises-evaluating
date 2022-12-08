@@ -20,7 +20,7 @@ class UIAppConfig:
 class LPFConfig():
     def __init__(self, exercise_type):
         if exercise_type == 'pushups':
-            self.FRAME_SKIP_RATE = 1
+            self.FRAME_SKIP_RATE = 2
             self.T = 50
             self.BETA = 1 - self.FRAME_SKIP_RATE / self.T
         elif exercise_type == 'squats':
@@ -37,16 +37,16 @@ class ExcerciseConfig:
             print("INITIALIZING PUSHUPS CONFIG")
             print("="*100)
 
-            self.DOWN_WEIGHT = 'src/predictor/models/pushups/mobinet-20220724_up.tflite'
-            self.UP_WEIGHT = 'src/predictor/models/pushups/mobinet-20220724_down.tflite'
+            self.DOWN_WEIGHT = 'src/predictor/models/pushups/pushups_MobileNetV2_down.tflite'
+            self.UP_WEIGHT = 'src/predictor/models/pushups/pushups_MobileNetV2_up.tflite'
             self.INDEX_LEFT = (11, 13, 15) 
             self.INDEX_RIGHT = (12, 14, 16)
         elif exercise_type=='squats':
             print("="*100)
             print("INITIALIZING SQUATS CONFIG")
             print("="*100)
-            self.DOWN_WEIGHT = 'src/predictor/models/squats/mobinet-20220724_up.tflite'
-            self.UP_WEIGHT = 'src/predictor/models/squats/mobinet-20220724_down.tflite'
+            self.DOWN_WEIGHT = 'src/predictor/models/squats/squats_MobileNetV2_down.tflite'
+            self.UP_WEIGHT = 'src/predictor/models/squats/squats_MobileNetV2_up.tflite'
             self.INDEX_LEFT = (23, 25, 27) 
             self.INDEX_RIGHT = (24, 26, 28)
         else:

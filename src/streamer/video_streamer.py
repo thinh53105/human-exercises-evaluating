@@ -65,7 +65,8 @@ class VideoStreamer:
 
     def loop(self):
         frame_count = 0
-        target_frame, target_angle = None, 0
+        target_up_frame, target_up_angle = None, 0
+        target_down_frame, target_down_angle = None, 200
         p_time = time.time()
         while not self.is_stopped:
             if not self.stream:
@@ -83,28 +84,31 @@ class VideoStreamer:
             if (frame_count + 1) % self.lpf_config.FRAME_SKIP_RATE == 0:
                 cur_angle = max(60, cur_angle)
                 Fn, state = self.lpf.cal_next(cur_angle)
+                print(state, self.lpf.high, cur_angle, target_up_angle, target_down_angle)
 
-                if self.lpf.high and cur_angle > target_angle:
-                    target_frame, target_angle = frame, cur_angle
-                if not self.lpf.high and cur_angle < target_angle:
-                    target_frame, target_angle = frame, cur_angle
+                if self.lpf.high and cur_angle > target_up_angle:
+                    target_up_frame, target_up_angle = frame, cur_angle
+                if not self.lpf.high and cur_angle < target_down_angle:
+                    target_down_frame, target_down_angle = frame, cur_angle
                 
                 if state == 1:
-                    up_right, conf = self.predictor.predict(target_frame, 1)
-                    self.evaluator.up_list.append((target_frame, up_right, conf))
+                    up_cls, conf = self.predictor.predict(target_up_frame, 1)
+                    up_right = up_cls == 0
+                    self.evaluator.up_list.append((target_up_frame, up_right, conf))
 
-                    target_angle = 200
+                    target_up_frame, target_up_angle = None, 0
                 
                 if state == 0:
-                    down_right, conf = self.predictor.predict(target_frame, 0)
-                    self.evaluator.down_list.append((target_frame, down_right, conf))
+                    down_cls, conf = self.predictor.predict(target_down_frame, 0)
+                    down_right = down_cls == 0
+                    self.evaluator.down_list.append((target_down_frame, down_right, conf))
 
                     if up_right and down_right:
                         self.no_right += 1
                     else:
                         self.no_wrong += 1
                     
-                    target_angle = 0
+                    target_down_frame, target_down_angle = None, 200
 
             self.frame = frame
             frame_count += 1
