@@ -25,7 +25,7 @@ class LPFConfig():
             self.BETA = 1 - self.FRAME_SKIP_RATE / self.T
         elif exercise_type == 'squats':
             self.FRAME_SKIP_RATE = 5
-            self.T = 51
+            self.T = 50
             self.BETA = 1 - self.FRAME_SKIP_RATE / self.T
         else:
             print('NO EXERCISE FOUNDED')

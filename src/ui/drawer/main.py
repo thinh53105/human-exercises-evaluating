@@ -19,7 +19,7 @@ class MainDrawer:
             []
         )
         self.div_navigator = Div(
-            (0, 200), (1000, 200), (55, 55, 55),
+            (200, 200), (1000, 200), (55, 55, 55),
             []
         )
         self.lbl_title = Label(
@@ -28,13 +28,13 @@ class MainDrawer:
             (255, 255, 255), 1.2, 5
         )
         self.btn_pushups = Button(
-            (50, 50), (300, 100), (195, 195, 75),
-            "Push-ups", 100, 
+            (150, 50), (300, 100), (195, 195, 75),
+            "Push-ups", 150, 
             (255, 255, 255), 1, 4,
             btn_pushups_func
         )
         self.btn_squats = Button(
-            (450, 50), (300, 100), (195, 195, 75),
+            (550, 50), (300, 100), (195, 195, 75),
             "Squats", 100, 
             (255, 255, 255), 1, 4,
             btn_squat_func

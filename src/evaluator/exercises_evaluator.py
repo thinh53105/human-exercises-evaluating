@@ -27,9 +27,8 @@ class Evaluator:
     def evaluate_counting(self):
         plt.figure(figsize=(10, 10))
         plt.plot(self.signal_filter.angle_list)
-        # plt.plot(self.signal_filter.filter_list)
-        plt.legend(['raw signal'])
-        # plt.legend(['raw signal', 'low-pass-filter'])
+        plt.plot(self.signal_filter.filter_list)
+        plt.legend(['raw signal', 'low-pass-filter'])
         plt.xlabel('frame count')
         plt.ylabel('angle')
         plt.show()
