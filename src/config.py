@@ -13,18 +13,18 @@ class UIUtilsConfig:
 
 
 class UIAppConfig:
-    WINDOW_WIDTH, WINDOW_HEIGHT = 1600, 900
+    WINDOW_WIDTH, WINDOW_HEIGHT = 1400, 750
     BACKGROUND_COLOR = (200, 111, 111)
     
 
 class LPFConfig():
     def __init__(self, exercise_type):
         if exercise_type == 'pushups':
-            self.FRAME_SKIP_RATE = 2
+            self.FRAME_SKIP_RATE = 5
             self.T = 50
             self.BETA = 1 - self.FRAME_SKIP_RATE / self.T
         elif exercise_type == 'squats':
-            self.FRAME_SKIP_RATE = 2
+            self.FRAME_SKIP_RATE = 5
             self.T = 51
             self.BETA = 1 - self.FRAME_SKIP_RATE / self.T
         else:

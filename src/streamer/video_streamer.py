@@ -65,8 +65,8 @@ class VideoStreamer:
 
     def loop(self):
         frame_count = 0
-        target_up_frame, target_up_angle = None, 0
-        target_down_frame, target_down_angle = None, 200
+        target_up_frame, target_process_up_frame, target_up_angle = None, None, 0
+        target_down_frame, target_process_down_frame, target_down_angle = None, None, 200
         p_time = time.time()
         while not self.is_stopped:
             if not self.stream:
@@ -76,7 +76,7 @@ class VideoStreamer:
                 self.frame = self.default_frame
                 self.stop()
                 continue
-            frame, cur_angle = self.keypoint_detector.process(frame)
+            process_frame, cur_angle = self.keypoint_detector.process(frame.copy())
             if not cur_angle:
                 # self.frame = self.default_frame
                 # self.stop()
@@ -84,33 +84,34 @@ class VideoStreamer:
             if (frame_count + 1) % self.lpf_config.FRAME_SKIP_RATE == 0:
                 cur_angle = max(60, cur_angle)
                 Fn, state = self.lpf.cal_next(cur_angle)
-                print(state, self.lpf.high, cur_angle, target_up_angle, target_down_angle)
 
                 if self.lpf.high and cur_angle > target_up_angle:
-                    target_up_frame, target_up_angle = frame, cur_angle
+                    target_up_frame, target_process_up_frame, target_up_angle = frame, process_frame, cur_angle
                 if not self.lpf.high and cur_angle < target_down_angle:
-                    target_down_frame, target_down_angle = frame, cur_angle
+                    target_down_frame, target_process_down_frame, target_down_angle = frame, process_frame, cur_angle
                 
                 if state == 1:
+                    cv2.imwrite(f'results_images/up_{int(self.lpf.count)}.jpg', target_up_frame)
                     up_cls, conf = self.predictor.predict(target_up_frame, 1)
                     up_right = up_cls == 0
-                    self.evaluator.up_list.append((target_up_frame, up_right, conf))
+                    self.evaluator.up_list.append((target_process_up_frame, up_right, conf))
 
-                    target_up_frame, target_up_angle = None, 0
+                    target_up_frame, target_process_up_frame, target_up_angle = None, None, 0
                 
                 if state == 0:
+                    cv2.imwrite(f'results_images/down_{int(self.lpf.count)}.jpg', target_down_frame)
                     down_cls, conf = self.predictor.predict(target_down_frame, 0)
                     down_right = down_cls == 0
-                    self.evaluator.down_list.append((target_down_frame, down_right, conf))
+                    self.evaluator.down_list.append((target_process_down_frame, down_right, conf))
 
                     if up_right and down_right:
                         self.no_right += 1
                     else:
                         self.no_wrong += 1
                     
-                    target_down_frame, target_down_angle = None, 200
+                    target_down_frame, target_process_down_frame, target_down_angle = None, None, 200
 
-            self.frame = frame
+            self.frame = process_frame
             frame_count += 1
             c_time = time.time()
             self.fps = 1 / (c_time - p_time + 1e-9)

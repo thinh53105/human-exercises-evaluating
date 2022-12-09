@@ -19,15 +19,15 @@ class PushupsDrawer:
             []
         )
         self.div_navigator = Div(
-            (1200, 50), (400, 800), (55, 55, 55),
+            (1000, 50), (400, 600), (55, 55, 55),
             []
         )
         self.div_exercise = Div(
-            (100, 100), (1000, 600), (155, 155, 155),
+            (100, 100), (800, 450), (155, 155, 155),
             []
         )
         self.div_analysis = Div(
-            (150, 700), (900, 200), app_config.BACKGROUND_COLOR,
+            (150, 550), (800, 200), app_config.BACKGROUND_COLOR,
             []
         )
         self.lbl_title = Label(
@@ -36,7 +36,7 @@ class PushupsDrawer:
             (255, 255, 255), 1, 5
         )
         self.frame_pushups = ImageFrame(
-            (0, 0), (1000, 600),
+            (0, 0), (800, 450),
             color=None,
             image=None,
             image_path='src/sample_images/pushups.png'
@@ -62,25 +62,25 @@ class PushupsDrawer:
             (255, 255, 255), 1, 5
         )
         self.btn_file = Button(
-            (50, 50), (300, 100), (195, 195, 75),
+            (50, 25), (300, 100), (195, 195, 75),
             "Open File", 150, 
             (255, 255, 255), 1, 4,
             btn_file_func
         )
         self.btn_camera = Button(
-            (50, 250), (300, 100), (195, 195, 75),
+            (50, 175), (300, 100), (195, 195, 75),
             "Open Camera", 200, 
             (255, 255, 255), 1, 4,
             btn_camera_func
         )
         self.btn_stop = Button(
-            (50, 450), (300, 100), (195, 195, 75),
+            (50, 325), (300, 100), (195, 195, 75),
             "Stop", 100, 
             (255, 255, 255), 1, 4,
             btn_stop_func
         )
         self.btn_back = Button(
-            (50, 650), (300, 100), (195, 195, 75),
+            (50, 475), (300, 100), (195, 195, 75),
             "Back", 100, 
             (255, 255, 255), 1, 4,
             btn_back_func
