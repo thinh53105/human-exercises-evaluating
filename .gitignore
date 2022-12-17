@@ -1,6 +1,7 @@
 # tf model file (.h5 or .tflite)
 *.h5
 *.tflite
+src/sample_videos/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

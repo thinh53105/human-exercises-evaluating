@@ -52,3 +52,10 @@ class ExcerciseConfig:
         else:
             print('NO EXCERCISE FOUND')
 
+class LabelsCongfig:
+    LB = {
+        'test_pushups_03.mp4': [[1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1]],
+        'test_squats_01.mp4' : [[1 for _ in range(18)], [1 for _ in range(10)] + [0, 0, 0, 1, 1, 0, 0, 0]],
+        'test_squats_02.mp4' : [[0 for _ in range(10)], [0 for _ in range(10)]],
+        'test_squats_09.mp4': [[1 for _ in range(11)], [1 for _ in range(6)] + [0 for _ in range(5)]]
+    }

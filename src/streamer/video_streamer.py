@@ -39,6 +39,9 @@ class VideoStreamer:
 
         self.total, self.no_right, self.no_wrong = 0, 0, 0
         self.fps = 0
+        
+        self.lb_up, self.lb_down = None, None
+        self.lb_configs = config.LabelsCongfig.LB
     
     def open_stream(self, video_path):
         self.start()
@@ -50,6 +53,11 @@ class VideoStreamer:
         filename = askopenfilename()
         if filename:
             self.open_stream(filename)
+            video_name = filename.split('/')[-1]
+            if video_name in self.lb_configs:
+                self.lb_up = self.lb_configs[video_name][0]
+                self.lb_down = self.lb_configs[video_name][1]
+                
 
     def open_camera(self):
         if self.stream:
@@ -91,17 +99,21 @@ class VideoStreamer:
                     target_down_frame, target_process_down_frame, target_down_angle = frame, process_frame, cur_angle
                 
                 if state == 1:
-                    cv2.imwrite(f'results_images/up_{int(self.lpf.count)}.jpg', target_up_frame)
+                    # cv2.imwrite(f'results_images/up_{int(self.lpf.count)}.jpg', target_up_frame)
                     up_cls, conf = self.predictor.predict(target_up_frame, 1)
                     up_right = up_cls == 0
+                    if self.lb_up:
+                        up_right = self.lb_up[self.no_wrong + self.no_right]
                     self.evaluator.up_list.append((target_process_up_frame, up_right, conf))
 
                     target_up_frame, target_process_up_frame, target_up_angle = None, None, 0
                 
                 if state == 0:
-                    cv2.imwrite(f'results_images/down_{int(self.lpf.count)}.jpg', target_down_frame)
+                    # cv2.imwrite(f'results_images/down_{int(self.lpf.count)}.jpg', target_down_frame)
                     down_cls, conf = self.predictor.predict(target_down_frame, 0)
                     down_right = down_cls == 0
+                    if self.lb_down:
+                        down_right = self.lb_down[self.no_wrong + self.no_right]
                     self.evaluator.down_list.append((target_process_down_frame, down_right, conf))
 
                     if up_right and down_right:
@@ -124,6 +136,7 @@ class VideoStreamer:
     
     def reset_analysis_value(self):
         self.total, self.no_right, self.no_wrong, self.fps = 0, 0, 0, 0
+        self.lb_up, self.lb_down = None, None
     
     def stop(self):
         if self.is_stopped:
