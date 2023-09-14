@@ -2,7 +2,7 @@
 Tracking, analyzing and evaluating performance of many human exercises like push-ups, squats, sit-ups, planks, pull-ups, etc.
 
 ## Demo Video
-[![Demo Video](src\sample_images\pushups.png)](http://www.youtube.com/watch?v=u2PjIwpdIyo&t=44s "Demo Human Exercises Counting and Evaluating")
+<a href="https://www.youtube.com/watch?v=u2PjIwpdIyo&t=44s"><img src="src\sample_images\pushups.png"></a>
 
 ## Create and activate virtual enviroment
 ```
